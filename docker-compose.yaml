@@ -1,0 +1,77 @@
+version: "3.8"
+
+networks:
+  service_net:
+    driver: bridge
+  gateway_net:
+    driver: bridge
+
+services:
+  # Todo service configuration
+  todo:
+    build: ./todo-service
+    restart: on-failure
+    volumes:
+      - ./todo-service:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - service_net
+
+  # User service configuration
+  user:
+    build: ./user-service
+    restart: on-failure
+    volumes:
+      - ./user-service:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - service_net
+
+  # Auth service configuration
+  auth:
+    build: ./auth-service
+    restart: on-failure
+    volumes:
+      - ./auth-service:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - service_net
+
+  # API gateway configuration
+  gateway:
+    build: ./api-gateway
+    restart: on-failure
+    ports:
+      - "8000:8000"  # Expose the API gateway to the host
+    volumes:
+      - ./api-gateway:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - service_net
+      - gateway_net
+
+  # Database configuration
+  db:
+    image: postgres:16.3
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USER}"
+    networks:
+      - service_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 4s
+      timeout: 10s
+      retries: 5
+
