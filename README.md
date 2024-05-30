@@ -14,7 +14,7 @@ RESTful API with Go Chi, GORM, and Custom API Gateway
 - [License](#license)
 
 ## Overview
-![Todo Diagram](https://ibb.co/xzcFTLC)
+![Todo Diagram](https://github.com/ennemli/todo/blob/main/todoDiagram.png)
 This project is a RESTful API built using the Go Chi router and GORM ORM, encapsulated in Docker containers managed by Docker Compose. It includes an API gateway developed from scratch that handles user authentication and routes requests to the appropriate services (User and Todo services). Each service follows a structured layout to maintain organization and separation of concerns.
 
 ## Features
@@ -96,7 +96,7 @@ service
 - POST /auth/valid: User validation.
 
 ## Testing
-Each service includes unit and integration tests located in the internal/tests/ directory. To run the tests, use the following command:
+Each service includes unit and integration tests in the internal/tests/ directory. To run the tests, use the following command:
 
 sh
 ```sh
